@@ -17,7 +17,8 @@ RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_quarto.sh prerelease
 RUN  printf "Y\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nY" | quarto install extension jmbuhr/quarto-molstar 
-
+RUN pip install shinylive --upgrade
+RUN printf "Y\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nY" | quarto install extension quarto-ext/shinylive
 EXPOSE 8787
 # Base image https://hub.docker.com/u/rocker/
 FROM rocker/shiny:latest
