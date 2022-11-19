@@ -12,7 +12,7 @@ RUN apt-get install -y git-core gcc g++ make libffi-dev libssl-dev python3-dev b
 RUN apt-get install -y libtiff5-dev libjpeg-dev libfreetype6-dev webp zlib1g-dev pcre++-dev libpango1.0-dev
 
 RUN apt-get install -y libev-dev
-
+RUN python3 -m pip install jupyter
 
 FROM rocker/r-ver:4
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later" \
@@ -103,5 +103,8 @@ RUN apt-get update
 #RUN Rscript -e 'install.packages("targets")'
 #RUN Rscript -e 'install.packages("data.table")'
 
+
 RUN apt-get install ssh-client
+EXPOSE 8787
+EXPOSE 3838
 CMD ["/init"]
