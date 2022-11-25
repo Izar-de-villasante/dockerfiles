@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=latest  
 #2022.07.2+576
-ENV DEFAULT_USER=idevillasante
+ENV DEFAULT_USER=rstudio
 ENV PANDOC_VERSION=default
 ENV QUARTO_VERSION=default
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -59,56 +59,10 @@ RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_quarto.sh 'prerelease'
 RUN /rocker_scripts/install_python.sh
 RUN /rocker_scripts/install_shiny_server.sh 
-RUN printf "Y\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nY" | quarto install extension jmbuhr/quarto-molstar 
-RUN printf "Y\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nY" | quarto install extension quarto-ext/shinylive
+RUN quarto install extension jmbuhr/quarto-molstar --no-prompt
+RUN quarto install extension quarto-ext/shinylive --no-prompt
 EXPOSE 8787
-RUN useradd --create-home --shell /bin/bash user1
-RUN echo 'user1:password' | chpasswd 
-# Base image https://hub.docker.com/u/rocker/
-#FROM rocker/shiny:latest
-
-### system libraries of general use
-## install debian packages
-#RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-#    libxml2-dev \
-#    g++\
-#    gcc\
-#    libxml2\
-#    libxslt-dev\
-#    libcairo2-dev \
-#    libsqlite3-dev \
-#    libmariadbd-dev \
-#    libpq-dev \
-#    libssh2-1-dev \
-#    unixodbc-dev \
-#    libcurl4-openssl-dev \
-#    libssl-dev \
-#    coinor-libcbc-dev coinor-libclp-dev libglpk-dev
-#
-#
-### update system libraries
-#RUN apt-get update && \
-#    apt-get upgrade -y && \
-#    apt-get clean
-#
-## copy necessary files
-### app folder
-#
-## Docker inheritance
-#FROM bioconductor/bioconductor_docker:devel
-#
-#RUN apt-get update
-#    RUN R -e 'BiocManager::install(ask = F)' && R -e 'BiocManager::install(c(\
-#    "Biostrings", "SummarizedExperiment",  ask = F))'
-## install renv & restore packages
-##RUN Rscript -e 'install.packages("renv")'
-##RUN Rscript -e 'install.packages("devtools")'
-##RUN Rscript -e 'install.packages("readxl")'
-##RUN Rscript -e 'install.packages("targets")'
-##RUN Rscript -e 'install.packages("data.table")'
-#
-#
-#RUN apt-get install ssh-client
-#EXPOSE 8787
-#EXPOSE 3838
-#CMD ["/init"]
+#RUN useradd --create-home --shell /bin/bash user1
+#RUN echo 'user1:password' | chpasswd 
+EXPOSE 3838
+CMD ["/init"]
