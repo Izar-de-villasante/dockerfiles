@@ -62,6 +62,9 @@ RUN install2.r --error --skipinstalled --ncpus -1 \
     data.table \
     shiny \
     Cairo \
+    docopt \
+    future \
+    future.batchtools \
     && rm -rf /tmp/downloaded_packages \
     && strip /usr/local/lib/R/site-library/*/libs/*.so
 
