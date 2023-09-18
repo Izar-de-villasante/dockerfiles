@@ -79,7 +79,7 @@ RUN quarto install extension quarto-ext/shinylive --no-prompt
 
 WORKDIR /Projects
 COPY renv.lock renv.lock
-#RUN R -e "renv::init(bioconductor = TRUE)"
+RUN R -e "renv::init(bioconductor = TRUE)"
 RUN R -e "renv::restore()"
 
 EXPOSE 8787
