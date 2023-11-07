@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
 LABEL org.opencontainers.image.source="https://github.com/Izar-de-villasante/dockerfiles" 
 LABEL org.opencontainers.image.vendor="IJC Bioinformatics Team" 
 LABEL org.opencontainers.image.authors="Izar de Villasante <idevillasante@carrerasresearch.org>" 
-LABEL org.opencontainers.image.description="Ready to use rstudio + quarto container to start your new projects. This image contains Rv.4.2 Python v.3.8+ rstudio v2.1.0.2 shiny Bioconductor and quarto 1.3+ and the extensions shinylive and molstar."
+LABEL org.opencontainers.image.description="Ready to use rstudio + quarto container to start your new projects. This image contains Rv.4.2 Python v.3.8+ rstudio v2.1.0.2 shiny Bioconductor and quarto 1.4+ and the extensions shinylive and molstar."
 
 ENV GCM_CREDENTIAL_STORE=gpg
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,7 +17,7 @@ ENV DEFAULT_USER=rstudio
 ENV PANDOC_VERSION=default
 ENV QUARTO_VERSION=default
 
-ENV RENV_VERSION 0.16.0
+ENV RENV_VERSION 1.0.2
 ENV RENV_PATHS_LIBRARY .cache/renv/
 
 
@@ -79,6 +79,7 @@ RUN quarto install extension quarto-ext/shinylive --no-prompt
 
 WORKDIR /Projects
 COPY renv.lock renv.lock
+RUN R -e "renv::init(bioconductor = TRUE)"
 RUN R -e "renv::restore()"
 
 EXPOSE 8787
