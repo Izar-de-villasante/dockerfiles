@@ -44,7 +44,7 @@ chmod +x rsession.sh
 
 singularity exec $1 which R
 
-singularity instance start --bind /ijc,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf $1 instance1
+singularity instance start --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf $1 instance1
 PASSWORD=pass singularity exec instance://instance1 /usr/lib/rstudio-server/bin/rserver --server-user=${USER} --auth-none=1 --auth-pam-helper-path=pam-helper --www-port 8788
 #PASSWORD=pass singularity exec --bind /ijc,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf instance://instance1 /usr/lib/rstudio-server/bin/rserver --server-user=${USER} --auth-none=1 --auth-pam-helper-path=pam-helper --www-port 8788
 

@@ -2,15 +2,15 @@
 # #SBATCH --partition=default # #SBATCH --partition=highCPU
 #SBATCH --time=3-0:00:00
 # #SBATCH --signal=USR2
-#SBATCH --ntasks=36
+#SBATCH --ntasks=10
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=4
+#SBATCH --mem-per-cpu=2
 #SBATCH --output=logs/big_run.%j.log
 #SBATCH --nodes=1
 
 # Load singularitty module from cluster LMOD (this may change)
 #module load singularity-3.8.3-gcc-11.2.0-rlxj6fi
-module load singularity
+#module load singularity
 
 # customize --output path as appropriate (to a directory readable only by the user!)
 
@@ -41,7 +41,7 @@ END
 
 chmod +x ${workdir}/rsession.sh
 
-export SINGULARITY_BIND="/ijc,/etc/slurm,/run/slurm,${workdir}/run:/run,${workdir}/tmp:/tmp,${workdir}/database.conf:/etc/rstudio/database.conf,${workdir}/rsession.sh:/etc/rstudio/rsession.sh,${workdir}/var/lib/rstudio-server:/var/lib/rstudio-server"
+export SINGULARITY_BIND="/workspace,${workdir}/run:/run,${workdir}/tmp:/tmp,${workdir}/database.conf:/etc/rstudio/database.conf,${workdir}/rsession.sh:/etc/rstudio/rsession.sh,${workdir}/var/lib/rstudio-server:/var/lib/rstudio-server"
 
 # Do not suspend idle sessions.
 # Alternative to setting session-timeout-minutes=0 in /etc/rstudio/rsession.conf
