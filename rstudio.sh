@@ -6,10 +6,10 @@
 # IMAGE=${IMAGE:-pansapiens/rocker-seurat:4.1.1-4.0.4}
 
 # Here is a modified version of rocker/rstudio I made in github registry:
-# IMAGE=${IMAGE:-ghcr.io/izarvillasante/dockerfiles:main}
+ IMAGE=${IMAGE:-ghcr.io/izarvillasante/dockerfiles:main}
 
 # A base rstudio image:
-IMAGE=${IMAGE:-rocker/rstudio:latest}
+# IMAGE=${IMAGE:-rocker/rstudio:latest}
 
 # you can override the IMAGE in the script with the env command:
 #IMAGE=rocker/rstudio:4.1.1 ./rstudio.sh
@@ -42,11 +42,18 @@ exec /usr/lib/rstudio-server/bin/rsession "\${@}"
 END
 chmod +x rsession.sh
 
-# Search for a free port to use:
-readonly PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
+# Search for a free port to use (needs python):
+PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
+# Search for a free port (needs netstat)
 if [ $? -ne 0 ]; then
   # Set a default port value
   PORT=8787
+  until ! netstat -ln | grep "  LISTEN  " | grep -iEo  ":[0-9]+" | cut -d: -f2 | grep -wqc ${PORT};
+  do
+      ((PORT++))
+      echo "Checking port: ${PORT}"
+  done
+      echo "Got one !"
 fi
 
 #Generate the password:
@@ -115,6 +122,7 @@ if [[ $HPC_ENV == 'bbgn' ]]; then
     docker://${IMAGE} \
                      /usr/lib/rstudio-server/bin/rserver --server-user=${USER} --auth-none=0 --auth-pam-helper-path=pam-helper --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 --rsession-path=/etc/rstudio/rsession.sh  --www-port=${PORT} 
 else
+
     singularity exec --bind ${HOME}:/home/rstudio \
                      --bind ${RSTUDIO_HOME}:${HOME}/.rstudio \
                      --bind ${R_LIBS_USER}:${R_LIBS_USER} \
@@ -123,7 +131,7 @@ else
                      --bind=${RSTUDIO_TMP}/var/run:/var/run/rstudio-server \
                      --env R_LIBS_USER=${R_LIBS_USER} \
                      docker://${IMAGE} \
-                     rserver --database-config-file database.conf --auth-none=0 --auth-pam-helper-path=pam-helper --www-port=${PORT}
+                     rserver --database-config-file database.conf --server-user=${USER} --auth-none=0 --auth-pam-helper-path=pam-helper --www-port=${PORT}
 fi
 
 printf 'rserver exited' 1>&2
